@@ -32,14 +32,14 @@ pipeline {
                         }
                     }
                     steps {
-                        sh'''
-                            #test -f build/index.html
-                            npm test
+                        sh '''
+                            npm install
+                            CI=true npm test -- --watchAll=false
                         '''
                     }
                     post {
                         always {
-                            junit 'jest-results/junit.xml'
+                            junit allowEmptyResults: true, testResults: 'junit.xml'
                         }
                     }
                 }

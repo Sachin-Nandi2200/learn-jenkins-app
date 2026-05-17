@@ -63,7 +63,7 @@ pipeline {
                                 reportFiles: 'index.html',
                                 reportName: "Playwright E2E Tests Report",
                                 reportTitles: "Playwright E2E Tests Report",
-                                useWraperFileDirectory: true
+                                useWrapperFileDirectly: true
                             ])
                         }
                     }

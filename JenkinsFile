@@ -53,14 +53,24 @@ pipeline {
                             npx playwright test --reporter=html
                         '''
                     }
+                    post {
+                        always {
+                            publishHTML ([
+                                allowMissing: false,
+                                alwaysLinkToLastBuild: true,
+                                keepAll: true,
+                                reportDir: 'playwright-report',
+                                reportFiles: 'index.html',
+                                reportName: "Playwright E2E Tests Report",
+                                reportTitles: "Playwright E2E Tests Report",
+                                useWraperFileDirectory: true
+                            ])
+                        }
+                    }
                 }
             }
         }
 
     }
-    post {
-        always {
-            junit 'test-results/junit.xml'
-        }
-    }
+    
 }

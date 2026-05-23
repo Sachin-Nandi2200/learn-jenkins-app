@@ -35,11 +35,12 @@ pipeline {
                         sh '''
                             npm install
                             CI=true npm test -- --watchAll=false
+                            find . -name "*.xml"
                         '''
                     }
                     post {
                         always {
-                            junit testResults: 'reports/junit.xml'
+                            junit '**/reports/*.xml'
                         }
                     }
                 }

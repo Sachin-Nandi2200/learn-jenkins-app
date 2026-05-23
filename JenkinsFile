@@ -32,15 +32,23 @@ pipeline {
                     }
 
                     steps {
+
                         sh '''
                             npm install
-                            CI=true npm test -- --watchAll=false --runInBand --passWithNoTests
+
+                            npx jest \
+                            --ci \
+                            --runInBand \
+                            --watchAll=false \
+                            --testResultsProcessor=jest-junit
+
+                            echo "JEST EXIT CODE: $?"
                         '''
                     }
 
                     post {
                         always {
-                            junit testResults: 'reports/junit.xml'
+                            junit allowEmptyResults: true, testResults: 'reports/junit.xml'
                         }
                     }
                 }

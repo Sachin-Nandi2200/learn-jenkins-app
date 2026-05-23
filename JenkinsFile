@@ -34,7 +34,7 @@ pipeline {
                     steps {
                         sh '''
                             npm install
-                            CI=true npm test -- --watchAll=false
+                            CI=true npm test -- --watchAll=false --detectOpenHandles --forceExit
                         '''
                     }
 

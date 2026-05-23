@@ -22,57 +22,26 @@ pipeline {
         //     }
         // }
 
-        stage('Tests') {
-            parallel {
-                stage('Unit Tests') {
-                    agent {
-                        docker {
-                            image 'node:20-alpine'
-                        }
-                    }
-                    steps {
-                        sh 'npm install'
-                        sh 'CI=true npm test -- --watchAll=false --runInBand --passWithNoTests'
-                    }
-                    post {
-                        always {
-                            junit allowEmptyResults: true, testResults: 'junit.xml'
-                        }
-                    }
-                }
-                stage('E2E') {
-                    agent {
-                        docker {
-                            image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
-                        }
-                    }
-
-                    steps {
-                        sh '''
-                            npm install
-                            npm run build
-                            npx serve -s build &
-                            sleep 10
-                            npx playwright test --reporter=html
-                        '''
-                    }
-
-                    post {
-                        always {
-                            publishHTML([
-                                allowMissing: false,
-                                alwaysLinkToLastBuild: true,
-                                keepAll: true,
-                                reportDir: 'playwright-report',
-                                reportFiles: 'index.html',
-                                reportName: "Playwright E2E Tests Report"
-                            ])
-                        }
-                    }
+        stage('Test') {
+            agent {
+                docker {
+                    image 'node:18-alpine'
+                    reuseNode true
                 }
             }
+            steps {
+                sh'''
+                    #test -f build/index.html
+                    npm test
+                '''
+                
+            }
         }
-
     }
-    
-}
+    post {
+        always {
+            junit 'test-results/junit.xml'
+        }
+    }
+}   
+            

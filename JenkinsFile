@@ -28,19 +28,19 @@ pipeline {
                     agent {
                         docker {
                             image 'node:20-alpine'
-                            reuseNode true
                         }
                     }
+
                     steps {
                         sh '''
                             npm install
-                            CI=true npm test -- --watchAll=false --detectOpenHandles --forceExit
-                            find . -name "*.xml"
+                            CI=true npm test -- --watchAll=false
                         '''
                     }
+
                     post {
                         always {
-                            junit allowEmptyResults: true, testResults: 'reports/junit.xml'
+                            junit testResults: 'reports/junit.xml'
                         }
                     }
                 }
@@ -48,30 +48,28 @@ pipeline {
                     agent {
                         docker {
                             image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
-                            reuseNode true
                         }
                     }
+
                     steps {
                         sh '''
                             npm install
-                            npm install serve@13.0.4
                             npm run build
                             npx serve -s build &
                             sleep 10
                             npx playwright test --reporter=html
                         '''
                     }
+
                     post {
                         always {
-                            publishHTML ([
+                            publishHTML([
                                 allowMissing: false,
                                 alwaysLinkToLastBuild: true,
                                 keepAll: true,
                                 reportDir: 'playwright-report',
                                 reportFiles: 'index.html',
-                                reportName: "Playwright E2E Tests Report",
-                                reportTitles: "Playwright E2E Tests Report",
-                                useWrapperFileDirectly: true
+                                reportName: "Playwright E2E Tests Report"
                             ])
                         }
                     }

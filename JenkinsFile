@@ -30,25 +30,13 @@ pipeline {
                             image 'node:20-alpine'
                         }
                     }
-
                     steps {
-
-                        sh '''
-                            npm install
-
-                            npx jest \
-                            --ci \
-                            --runInBand \
-                            --watchAll=false \
-                            --testResultsProcessor=jest-junit
-
-                            echo "JEST EXIT CODE: $?"
-                        '''
+                        sh 'npm install'
+                        sh 'CI=true npm test -- --watchAll=false --runInBand --passWithNoTests'
                     }
-
                     post {
                         always {
-                            junit allowEmptyResults: true, testResults: 'reports/junit.xml'
+                            junit allowEmptyResults: true, testResults: 'junit.xml'
                         }
                     }
                 }

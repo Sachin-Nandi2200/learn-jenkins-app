@@ -39,7 +39,7 @@ pipeline {
                     }
                     post {
                         always {
-                            junit allowEmptyResults: true, testResults: 'junit.xml'
+                            junit testResults: 'reports/junit.xml'
                         }
                     }
                 }
@@ -51,9 +51,11 @@ pipeline {
                         }
                     }
                     steps {
-                        sh'''
-                            npm install serve
-                            node_modules/.bin/serve -s build &
+                        sh '''
+                            npm install
+                            npm install serve@13.0.4
+                            npm run build
+                            npx serve -s build &
                             sleep 10
                             npx playwright test --reporter=html
                         '''
